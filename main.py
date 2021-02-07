@@ -12,6 +12,7 @@ class MyWidget(QMainWindow):
         self.con = sqlite3.connect("coffee.sqlite")
         cur = self.con.cursor()
         self.pushButton.clicked.connect(self.filter)
+        self.pushButton_2.clicked.connect(self.up)
 
     def filter(self):
         cur = self.con.cursor()
@@ -25,6 +26,19 @@ class MyWidget(QMainWindow):
                 self.tableWidget.setItem(i, j, QTableWidgetItem(str(val)))
         self.tableWidget.setHorizontalHeaderLabels(['id', 'name_sort', 'degree', 'mol_zer',
                                                     'taste', 'price', 'valuum'])
+
+    def up(self):
+        uic.loadUi('addEditCoffeeForm.ui', self)
+        self.pushButton.clicked.connect(self.a)
+
+    def a(self):
+        cur = self.con.cursor()
+        result = cur.execute(f"{self.lineEdit.text()}").fetchall()
+        self.tableWidget.setRowCount(len(result))
+        self.tableWidget.setColumnCount(len(result[0]))
+        for i, elem in enumerate(result):
+            for j, val in enumerate(elem):
+                self.tableWidget.setItem(i, j, QTableWidgetItem(str(val)))
 
 
 def main():
